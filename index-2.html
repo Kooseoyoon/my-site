@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinese Tests Service Website</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Arial, sans-serif;
+  background: #F3F5F4;
+}
+
+/* ===== 네비바 ===== */
+.global-nav {
+  background: #ffffff;
+  padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+  border-bottom: 1px solid #e0e0e0;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo .logo-icon {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 2px solid #2f6f4f;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #2f6f4f; font-weight: bold; flex-shrink: 0;
+}
+.nav-logo .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+.nav-logo .logo-text .zh { font-size: 15px; font-weight: bold; color: #222; }
+.nav-logo .logo-text .en { font-size: 11px; color: #666; }
+.nav-menu { display: flex; align-items: center; gap: 4px; }
+.nav-menu .menu-item { padding: 8px 14px; font-size: 14px; color: #333; cursor: pointer; border-radius: 4px; white-space: nowrap; }
+.nav-menu .menu-item:hover { background: #f0f0f0; }
+.nav-menu .menu-item .arrow { font-size: 10px; margin-left: 2px; color: #888; }
+.nav-actions { display: flex; align-items: center; gap: 10px; }
+.nav-actions .icon-btn { width: 34px; height: 34px; border-radius: 50%; border: none; background: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: #444; }
+.nav-actions .icon-btn:hover { background: #f0f0f0; }
+.nav-actions .lang-btn { display: flex; align-items: center; gap: 4px; border: 1px solid #ccc; border-radius: 20px; padding: 5px 12px; font-size: 13px; cursor: pointer; background: none; color: #333; }
+.nav-actions .lang-btn:hover { background: #f5f5f5; }
+.nav-actions .login-btn { padding: 7px 18px; font-size: 14px; border: none; background: none; cursor: pointer; color: #333; font-weight: 500; }
+.nav-actions .login-btn:hover { text-decoration: underline; }
+
+/* ===== 브레드크럼 ===== */
+.breadcrumb-bar {
+  background: #2f6f4f; color: white; padding: 12px 40px;
+  font-size: 14px; display: flex; align-items: center; gap: 8px;
+}
+.breadcrumb-bar .home-icon { font-size: 16px; }
+.breadcrumb-bar .sep { color: #aad4bc; }
+.breadcrumb-bar .current { color: #f0c97a; font-weight: 500; }
+
+/* ===== 메인 콘텐츠 ===== */
+.container { max-width: 1200px; margin: 40px auto; padding: 0 40px; }
+.back-btn { background: #2f6f4f; color: white; border: none; padding: 9px 18px; border-radius: 6px; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 24px; }
+.back-btn:hover { background: #246040; }
+h2 { color: #2f6f4f; text-align: center; font-size: 28px; margin-bottom: 30px; }
+.form-wrapper { max-width: 1050px; margin: 0 auto; }
+.tabs { display: flex; gap: 6px; margin-bottom: 0; }
+.tab { padding: 11px 22px; background: #2f6f4f; color: white; border-radius: 6px 6px 0 0; font-size: 14px; cursor: pointer; user-select: none; white-space: nowrap; }
+.tab:hover { background: #3a8660; }
+.tab.active { background: #e3a35d; }
+.form-box { background: #ffffff; padding: 50px 40px 40px; border-radius: 0 6px 6px 6px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+.input-row { display: flex; justify-content: center; align-items: center; gap: 12px; }
+.input-row input { padding: 12px 16px; width: 260px; border-radius: 6px; border: none; font-size: 14px; background: #e8e8e8; color: #999; outline: none; }
+.input-row input:focus { background: #ddd; color: #333; }
+.search-btn { background: #2f6f4f; color: white; border: none; padding: 12px 28px; font-size: 15px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+.search-btn:hover { background: #246040; }
+.notice { margin-top: 18px; color: #999; font-size: 13px; text-align: center; }
+.notice .warn-icon { color: #e3a35d; margin-right: 4px; }
+
+/* ===== 결과 화면 ===== */
+.result-container { max-width: 520px; margin: 40px auto; padding: 0 20px 60px; }
+.result-title { text-align: center; font-size: 26px; font-weight: bold; color: #2f6f4f; margin: 30px 0 20px; }
+.result-card { background: #f0f5f2; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.card-header { background: #2f6f4f; color: white; padding: 18px 20px; font-weight: bold; font-size: 17px; border-radius: 18px 18px 0 0; }
+.card-body { padding: 16px 20px 24px; text-align: left; }
+.label { color: #7a9a8a; margin-top: 16px; font-size: 13px; font-weight: 500; }
+.value-box { background: #ffffff; padding: 14px 16px; border-radius: 10px; margin-top: 6px; font-size: 15px; color: #222; }
+.green { color: #2f6f4f; font-weight: bold; }
+.pass-box { background: #2f6f4f; height: 48px; border-radius: 10px; margin-top: 6px; }
+.result-links { text-align: center; margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+.result-links a { color: #2f6f4f; font-size: 14px; text-decoration: none; cursor: pointer; }
+.result-links a:hover { text-decoration: underline; }
+
+/* ===== 로그인 화면 ===== */
+.login-wrapper { display: flex; min-height: calc(100vh - 120px); max-width: 1100px; margin: 40px auto; padding: 0 40px; }
+.login-left { flex: 1; background-color: #ccddd6; border-radius: 12px 0 0 12px; display: flex; align-items: center; justify-content: center; padding: 60px 48px; }
+.login-left-inner { text-align: center; }
+.login-left-title { color: #2f6f4f; font-size: 30px; font-weight: bold; margin-bottom: 28px; }
+.login-left-desc { color: #444; font-size: 14px; line-height: 1.8; max-width: 340px; margin: 0 auto 32px; }
+.login-left-links { display: flex; justify-content: center; gap: 28px; }
+.login-left-links a { color: #2f6f4f; font-size: 14px; text-decoration: none; }
+.login-left-links a:hover { text-decoration: underline; }
+.login-right { flex: 1; background: #fff; border-radius: 0 12px 12px 0; padding: 60px 52px; display: flex; flex-direction: column; justify-content: center; box-shadow: 2px 4px 20px rgba(0,0,0,0.08); }
+.login-right-title { color: #2f6f4f; font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 36px; }
+.login-input-wrap { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; gap: 10px; }
+.login-input-wrap:focus-within { border-color: #2f6f4f; }
+.login-icon { font-size: 16px; color: #888; flex-shrink: 0; }
+.login-icon-right { font-size: 16px; color: #aaa; margin-left: auto; cursor: pointer; }
+.login-input { border: none; outline: none; font-size: 15px; width: 100%; color: #333; background: transparent; }
+.login-input::placeholder { color: #aaa; }
+.login-btn-main { width: 100%; padding: 16px; background: #2f6f4f; color: white; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+.login-btn-main:hover { background: #246040; }
+.login-footer-links { margin-top: 16px; font-size: 13px; color: #666; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
+.login-footer-links a { color: #2f6f4f; text-decoration: none; }
+.login-footer-links a:hover { text-decoration: underline; }
+
+/* ===== 화면 전환 ===== */
+#result { display: none; }
+#login { display: none; }
+
+/* ===== 모바일 전용 요소 기본 숨김 ===== */
+.mobile-nav, .mobile-hero, .mobile-form, .mobile-footer { display: none; }
+
+/* ===== 모바일 (768px 이하) ===== */
+@media (max-width: 768px) {
+  .global-nav, .breadcrumb-bar, .container { display: none !important; }
+  .mobile-nav, .mobile-hero, .mobile-form, .mobile-footer { display: block; }
+
+  .mobile-nav { background: #fff; padding: 12px 16px; display: flex !important; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8e8e8; }
+  .mobile-nav .m-logo { display: flex; align-items: center; gap: 8px; }
+  .mobile-nav .m-logo .logo-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #2f6f4f; display: flex; align-items: center; justify-content: center; font-size: 15px; color: #2f6f4f; font-weight: bold; }
+  .mobile-nav .m-logo .logo-text .zh { font-size: 14px; font-weight: bold; color: #222; display: block; }
+  .mobile-nav .m-logo .logo-text .en { font-size: 10px; color: #888; display: block; }
+  .mobile-nav .m-icons { display: flex; gap: 14px; font-size: 20px; color: #555; }
+
+  .mobile-hero { background-color: #d4e4de; padding: 40px 24px 48px; text-align: center; }
+  .mobile-hero h2 { color: #2f6f4f; font-size: 28px; font-weight: bold; margin-bottom: 14px; }
+  .mobile-hero p { color: #444; font-size: 14px; line-height: 1.6; }
+
+  .mobile-form { background: #fff; padding: 24px 16px 32px; }
+  .m-tab-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 18px 16px; margin-bottom: 12px; display: flex !important; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+  .m-tab-card.active { background: #2f6f4f; border-color: #2f6f4f; }
+  .m-tab-card.active .m-tab-label { color: #fff; }
+  .m-tab-card .m-tab-icon { font-size: 26px; }
+  .m-tab-card .m-tab-label { font-size: 14px; color: #2f6f4f; font-weight: 500; text-align: center; }
+  .m-input { width: 100%; padding: 14px 16px; border: none; border-bottom: 1px solid #e0e0e0; font-size: 14px; color: #999; background: #fff; outline: none; margin-bottom: 4px; display: block; }
+  .m-input:focus { color: #333; border-bottom-color: #2f6f4f; }
+  .m-search-btn { width: 100%; padding: 16px; background: #2f6f4f; color: white; font-size: 16px; border: none; border-radius: 30px; cursor: pointer; margin-top: 28px; }
+
+  .mobile-footer { background: #2f6f4f; padding: 36px 20px 40px; text-align: center; color: rgba(255,255,255,0.8); font-size: 12px; line-height: 2; }
+  .mobile-footer .sns-row { display: flex !important; justify-content: center; gap: 16px; margin-bottom: 20px; }
+  .mobile-footer .sns-icon { width: 40px; height: 40px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.6); display: flex !important; align-items: center; justify-content: center; font-size: 18px; color: white; }
+  .mobile-footer p { margin: 2px 0; }
+
+  .login-wrapper { flex-direction: column; padding: 0; margin: 0; }
+  .login-left { border-radius: 0; padding: 40px 24px; }
+  .login-right { border-radius: 0; padding: 40px 24px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== 첫 화면 ===== -->
+<div id="main">
+
+  <!-- 모바일 네비 -->
+  <nav class="mobile-nav">
+    <div class="m-logo">
+      <div class="logo-icon">中</div>
+      <div class="logo-text">
+        <span class="zh">中文考试服务网</span>
+        <span class="en">Chinese Tests Service Website</span>
+      </div>
+    </div>
+    <div class="m-icons"><span>🔍</span><span>☰</span></div>
+  </nav>
+
+  <!-- 모바일 히어로 -->
+  <div class="mobile-hero">
+    <h2>Search</h2>
+    <p>Please fill in the relevant information and<br>click "search" to check your results or apply<br>for the result service</p>
+  </div>
+
+  <!-- 모바일 폼 -->
+  <div class="mobile-form">
+    <div class="m-tab-card active">
+      <span class="m-tab-icon">🔍</span>
+      <span class="m-tab-label">Look up my results</span>
+    </div>
+    <div class="m-tab-card">
+      <span class="m-tab-icon">📋</span>
+      <span class="m-tab-label">Search by score report number</span>
+    </div>
+    <div class="m-tab-card">
+      <span class="m-tab-icon">🎫</span>
+      <span class="m-tab-label">Forgot Admission ticket number</span>
+    </div>
+    <div style="margin-top: 20px;">
+      <input class="m-input" id="m-ticket" placeholder="Admission Ticket Number">
+      <input class="m-input" id="m-name" placeholder="Enter Your Full Name">
+    </div>
+    <button class="m-search-btn" onclick="validateAndSearch('mobile')">Search</button>
+  </div>
+
+  <!-- 모바일 푸터 -->
+  <div class="mobile-footer">
+    <div class="sns-row">
+      <div class="sns-icon">💬</div>
+      <div class="sns-icon">f</div>
+      <div class="sns-icon">✕</div>
+      <div class="sns-icon">▶</div>
+      <div class="sns-icon">📷</div>
+    </div>
+    <p>Copyright © CTI 2009-2018</p>
+    <p>Beijing ICP No.16003362-1</p>
+    <p>Privacy Policy | Terms</p>
+  </div>
+
+  <!-- 데스크탑 네비바 -->
+  <nav class="global-nav">
+    <div class="nav-logo">
+      <div class="logo-icon">中</div>
+      <div class="logo-text">
+        <span class="zh">中文考试服务网</span>
+        <span class="en">Chinese Tests Service Website</span>
+      </div>
+    </div>
+    <div class="nav-menu">
+      <div class="menu-item">HSK3.0 <span class="arrow">▾</span></div>
+      <div class="menu-item">Test Takers <span class="arrow">▾</span></div>
+      <div class="menu-item">Teachers <span class="arrow">▾</span></div>
+      <div class="menu-item">Partners <span class="arrow">▾</span></div>
+      <div class="menu-item">Researchers <span class="arrow">▾</span></div>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn">🔍</button>
+      <button class="lang-btn">🌐 EN</button>
+      <button class="login-btn">Log In</button>
+    </div>
+  </nav>
+
+  <!-- 브레드크럼 -->
+  <div class="breadcrumb-bar">
+    <span class="home-icon">🏠</span>
+    <span>Home</span>
+    <span class="sep">›</span>
+    <span class="current">View Score</span>
+  </div>
+
+  <!-- 데스크탑 메인 -->
+  <div class="container">
+    <button class="back-btn" onclick="void(0)">‹ Back</button>
+    <h2>Search</h2>
+    <div class="form-wrapper">
+      <div class="tabs">
+        <div class="tab active">Look up my results</div>
+        <div class="tab">Search by score report number</div>
+        <div class="tab">Forgot Admission ticket number</div>
+      </div>
+      <div class="form-box">
+        <div class="input-row">
+          <input id="ticket" placeholder="Admission Ticket Number">
+          <input id="name" placeholder="Enter Your Full Name">
+          <button class="search-btn" onclick="validateAndSearch('desktop')">Search</button>
+        </div>
+        <div class="notice">
+          <span class="warn-icon">⚠</span>
+          Please fill in the relevant information and click "search" to check your results or apply for the result service
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ===== 결과 화면 ===== -->
+<div id="result">
+
+  <nav class="global-nav">
+    <div class="nav-logo">
+      <div class="logo-icon">中</div>
+      <div class="logo-text">
+        <span class="zh">中文考试服务网</span>
+        <span class="en">Chinese Tests Service Website</span>
+      </div>
+    </div>
+    <div class="nav-menu">
+      <div class="menu-item">HSK3.0 <span class="arrow">▾</span></div>
+      <div class="menu-item">Test Takers <span class="arrow">▾</span></div>
+      <div class="menu-item">Teachers <span class="arrow">▾</span></div>
+      <div class="menu-item">Partners <span class="arrow">▾</span></div>
+      <div class="menu-item">Researchers <span class="arrow">▾</span></div>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn">🔍</button>
+      <button class="lang-btn">🌐 EN</button>
+      <button class="login-btn">Log In</button>
+    </div>
+  </nav>
+
+  <div class="result-container">
+    <div class="result-title">Score Details</div>
+    <div class="result-card">
+      <div class="card-header">HSK Level 6</div>
+      <div class="card-body">
+        <div class="label">Test Date</div>
+        <div class="value-box">2026-04-11</div>
+        <div class="label">Total Score</div>
+        <div class="value-box"><span class="green">184</span>/300</div>
+        <div class="label">Passing Status</div>
+        <div class="pass-box"></div>
+        <div class="label">Listening Score</div>
+        <div class="value-box"><span class="green">78</span>/100</div>
+        <div class="label">Reading Score</div>
+        <div class="value-box"><span class="green">65</span>/100</div>
+        <div class="label">Writing Score</div>
+        <div class="value-box"><span class="green">41</span>/100</div>
+      </div>
+    </div>
+    <div class="result-links">
+      <a href="#" onclick="showLogin(); return false;">Request a review &gt;</a>
+      <a href="#" onclick="showLogin(); return false;">Request additional score reports &gt;</a>
+    </div>
+    <div style="text-align:center; margin-top: 24px;">
+      <button class="search-btn" onclick="goBack()">Back</button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ===== 로그인 화면 ===== -->
+<div id="login">
+
+  <nav class="global-nav">
+    <div class="nav-logo">
+      <div class="logo-icon">中</div>
+      <div class="logo-text">
+        <span class="zh">中文考试服务网</span>
+        <span class="en">Chinese Tests Service Website</span>
+      </div>
+    </div>
+    <div class="nav-menu">
+      <div class="menu-item">HSK3.0 <span class="arrow">▾</span></div>
+      <div class="menu-item">Test Takers <span class="arrow">▾</span></div>
+      <div class="menu-item">Teachers <span class="arrow">▾</span></div>
+      <div class="menu-item">Partners <span class="arrow">▾</span></div>
+      <div class="menu-item">Researchers <span class="arrow">▾</span></div>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn">🔍</button>
+      <button class="lang-btn">🌐 EN</button>
+      <button class="login-btn">Log In</button>
+    </div>
+  </nav>
+
+  <div class="breadcrumb-bar">
+    <span class="home-icon">🏠</span>
+    <span>Home</span>
+    <span class="sep">›</span>
+    <span class="current">Log in</span>
+  </div>
+
+  <div class="login-wrapper">
+    <div class="login-left">
+      <div class="login-left-inner">
+        <h2 class="login-left-title">Your Account</h2>
+        <p class="login-left-desc">Creating a personal account ensures the safe storage of your test records, test scores, and other important details. This enables you to access them whenever you need and simplifies the exam registration process.</p>
+        <div class="login-left-links">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms of service</a>
+        </div>
+      </div>
+    </div>
+    <div class="login-right">
+      <h2 class="login-right-title">Log in</h2>
+      <div class="login-input-wrap">
+        <span class="login-icon">✉</span>
+        <input class="login-input" type="email" placeholder="Email">
+      </div>
+      <div class="login-input-wrap">
+        <span class="login-icon">🔒</span>
+        <input class="login-input" type="password" placeholder="Password">
+        <span class="login-icon-right">👁</span>
+      </div>
+      <button class="login-btn-main">Log in</button>
+      <div class="login-footer-links">
+        <span>No Account? <a href="#">Register Now</a></span>
+        <a href="#">Forgot your password?</a>
+      </div>
+      <div class="login-footer-links" style="margin-top: 8px;">
+        <span>For Test Center login, <a href="#">please click here</a></span>
+      </div>
+      <div style="margin-top: 28px; text-align:center;">
+        <button class="search-btn" onclick="backToResult()">← Back</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+function validateAndSearch(mode) {
+  var ticket = mode === 'mobile'
+    ? document.getElementById('m-ticket').value.trim()
+    : document.getElementById('ticket').value.trim();
+  var name = mode === 'mobile'
+    ? document.getElementById('m-name').value.trim()
+    : document.getElementById('name').value.trim();
+
+  if (ticket === 'H62604815010100131' && name === 'kooseoyoon') {
+    showResult();
+  } else {
+    alert('Invalid information. Please check your Admission Ticket Number and Full Name.');
+  }
+}
+
+function showResult() {
+  hide('main'); hide('login');
+  show('result');
+}
+
+function goBack() {
+  hide('result'); hide('login');
+  show('main');
+}
+
+function showLogin() {
+  hide('main'); hide('result');
+  show('login');
+}
+
+function backToResult() {
+  hide('login');
+  show('result');
+}
+
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+
+</body>
+</html>
